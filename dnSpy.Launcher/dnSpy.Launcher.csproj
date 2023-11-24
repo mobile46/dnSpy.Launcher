@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\dnSpy\DnSpyCommon.props" />
+
+  <PropertyGroup>
+    <Authors>Mobile46</Authors>
+    <Company>$(Authors)</Company>
+    <Copyright>Copyright © $([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
+
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\dnSpy\dnSpy.snk</AssemblyOriginatorKeyFile>
+    <Version>1.0.0.0</Version>
+    <Nullable>enable</Nullable>
+
+    <OutputType>WinExe</OutputType>
+    <OutputType Condition=" '$(IsDotNet)' == 'true' ">Exe</OutputType>
+    <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <ApplicationIcon>..\dnSpy\dnSpy\dnSpy\Images\dnSpy.ico</ApplicationIcon>
+    <ApplicationManifest>..\dnSpy\dnSpy\dnSpy\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\dnSpy\dnSpy\dnSpy\app.config" Condition=" '$(IsDotNetFramework)' == 'true' ">
+      <Link>app.config</Link>
+    </None>
+    <None Include="..\dnSpy\dnSpy\dnSpy\app.manifest">
+      <Link>app.manifest</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="dnlib" Version="$(DnlibVersion)" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(IsDotNetFramework)' == 'true' ">
+    <Copy SourceFiles="$(TargetPath);$(TargetPath).config"
+          DestinationFolder="..\dnSpy\dnSpy\bin\$(Configuration)\$(TargetFramework)\"
+          SkipUnchangedFiles="true" />
+  </Target>
+
+</Project>
